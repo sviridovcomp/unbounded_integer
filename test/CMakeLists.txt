@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5...3.16)
 project(unbounded_integer_unit_tests CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -16,7 +16,8 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 add_executable(unbounded_integer_unit_tests
-                sum_test.cpp)
+                sum_test.cpp
+                init_test.cpp)
 
 target_include_directories(unbounded_integer_unit_tests
         PUBLIC ../src)
