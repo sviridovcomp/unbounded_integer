@@ -18,6 +18,9 @@ enable_testing()
 add_executable(unbounded_integer_unit_tests
                 sum_test.cpp)
 
+target_include_directories(unbounded_integer_unit_tests
+        PUBLIC ../src)
+
 target_link_libraries(unbounded_integer_unit_tests
         gtest_main)
 

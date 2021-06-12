@@ -4,33 +4,47 @@
 #include <vector>
 #include "details/utils.h"
 
-template<std::size_t DigitsCount = 1024>
 class unbounded_integer {
 public:
-    unbounded_integer() {
-        integer_storage_.reserve(DigitsCount);
-    }
+    unbounded_integer() = default;
 
     template<typename Number, std::enable_if_t<std::is_integral<Number>::value, bool> = true>
     unbounded_integer(Number value);
 
     unbounded_integer(std::string_view value);
 
+    std::vector <int32_t> const data() const { return integer_storage_; }
+
+    std::size_t digits_count() const { return digits_count_; }
+
+    friend std::ostream &operator<<(std::ostream &os, unbounded_integer const &value) {
+        for (auto i = 0; i < value.digits_count(); i++) {
+            os << value.data()[i];
+        }
+        return os;
+    }
+
 private:
-    std::vector<int> integer_storage_;
+    std::vector <int32_t> integer_storage_;
+    std::size_t digits_count_{0};
 };
 
-template<std::size_t DigitsCount>
 template<typename Number, std::enable_if_t<std::is_integral<Number>::value, bool>>
-unbounded_integer<DigitsCount>::unbounded_integer(Number value) {
+unbounded_integer::unbounded_integer(Number value) {
     for (auto i = value; i; i /= 10) {
-        integer_storage_.push_back(i);
+        integer_storage_.push_back(i % 10);
+        ++digits_count_;
     }
-    integer_storage_.reserve();
+
+    std::reverse(integer_storage_.begin(), integer_storage_.end());
 }
 
-template<std::size_t DigitsCount>
-unbounded_integer<DigitsCount>::unbounded_integer(std::string_view value) {
+unbounded_integer::unbounded_integer(std::string_view value) {
+    integer_storage_.clear();
+    for (; !value.empty(); value.remove_prefix(1)) {
+        integer_storage_.push_back(static_cast<int>(value.front()) - 48);
+        ++digits_count_;
+    }
 }
 
 
